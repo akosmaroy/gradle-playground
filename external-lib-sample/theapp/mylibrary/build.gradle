@@ -1,0 +1,20 @@
+import org.gradle.internal.os.OperatingSystem
+
+plugins {
+    id 'cpp-library'
+}
+
+def opencv_include = file('../../external/src/main/public')
+
+def link_external = file(OperatingSystem.current().getLinkLibraryName('../../external/build/lib/main/debug/external'))
+
+def lib_external = file(OperatingSystem.current().getSharedLibraryName('../../external/build/lib/main/debug/external'))
+
+components.main.binaries.whenElementFinalized { binary ->
+    project.dependencies {
+        add(binary.includePathConfiguration.name, files(opencv_include))
+        add(binary.linkLibraries.name, files(link_external))
+        add(binary.runtimeLibraries.name, files(lib_external))
+    }
+}
+
